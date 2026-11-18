@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.env
+*.log
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+data/
+*.sqlite
+*.sqlite3
+docs/ebooks/temp_book_*.html
+.DS_Store
+Thumbs.db

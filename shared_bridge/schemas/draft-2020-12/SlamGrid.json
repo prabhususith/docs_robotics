@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/SlamGrid.json",
+  "title": "SlamGrid",
+  "description": "2D Occupancy Grid Map with planned path and execution benchmarks",
+  "type": "object",
+  "properties": {
+    "resolution": {
+      "type": "number",
+      "minimum": 0.001,
+      "description": "Grid cell size in meters"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of horizontal cells"
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of vertical cells"
+    },
+    "occupancyData": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "description": "Flattened occupancy probability array (0=free, 100=occupied, -1=unknown)"
+    },
+    "plannedPath": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "x": { "type": "number" },
+          "y": { "type": "number" }
+        },
+        "required": ["x", "y"],
+        "additionalProperties": false
+      },
+      "description": "Ordered path waypoint coordinates in grid indices"
+    },
+    "algorithmMetrics": {
+      "type": "object",
+      "properties": {
+        "algorithm": { "type": "string", "enum": ["astar", "dijkstra"] },
+        "expandedNodes": { "type": "integer", "minimum": 0 },
+        "computeTimeMs": { "type": "number", "minimum": 0 },
+        "pathLength": { "type": "number", "minimum": 0 }
+      },
+      "required": ["algorithm", "expandedNodes", "computeTimeMs", "pathLength"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["resolution", "width", "height", "occupancyData", "plannedPath", "algorithmMetrics"],
+  "additionalProperties": false
+}

@@ -1,0 +1,37 @@
+{
+  "name": "robocore-studio",
+  "version": "1.0.0",
+  "description": "RoboCore Studio — Physical AI & Autonomous Systems R&D Platform",
+  "private": true,
+  "workspaces": [
+    "shared_bridge",
+    "node_express_core",
+    "ui_control_plane"
+  ],
+  "scripts": {
+    "build:bridge": "npm --prefix shared_bridge run build",
+    "build:node": "npm --prefix node_express_core run build",
+    "build:ui": "npm --prefix ui_control_plane run build",
+    "build:all": "npm run build:bridge && npm run build:node && npm run build:ui",
+    "typecheck": "npm --prefix shared_bridge run typecheck && npm --prefix node_express_core run typecheck && npm --prefix ui_control_plane run typecheck",
+    "audit:i18n": "node scripts/audit-i18n.mjs",
+    "build:ebooks": "node scripts/build-all-ebooks.mjs",
+    "test:python": "pytest python_ai_core/test_core.py",
+    "dev:node": "npm --prefix node_express_core run dev",
+    "dev:ui": "npm --prefix ui_control_plane run dev",
+    "dev:python": "python -m uvicorn python_ai_core.main:app --host 0.0.0.0 --port 8000 --reload"
+  },
+  "keywords": [
+    "robotics",
+    "physical-ai",
+    "kinematics",
+    "slam",
+    "lidar",
+    "vla",
+    "mcp",
+    "i18n",
+    "ros2"
+  ],
+  "author": "RoboCore Studio Engineering Team",
+  "license": "Apache-2.0"
+}

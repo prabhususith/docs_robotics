@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/SupportedLocale.json",
+  "title": "SupportedLocale",
+  "description": "Permitted ISO 639-1 language codes for multilingual RoboCore Studio operations",
+  "type": "string",
+  "enum": ["en", "ta", "hi", "ja", "de"]
+}

@@ -1,0 +1,39 @@
+# =========================================================================
+# RoboCore Studio — React + TypeScript Zero-CDN UI Workbench
+# Hardware Envelope: ThinkBook 8GB RAM (< 120MB RAM Footprint)
+# =========================================================================
+
+# Stage 1: Build React static bundle
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json tsconfig.base.json ./
+COPY shared_bridge/package*.json ./shared_bridge/
+COPY shared_bridge/tsconfig*.json ./shared_bridge/
+COPY ui_control_plane/package*.json ./ui_control_plane/
+COPY ui_control_plane/tsconfig*.json ./ui_control_plane/
+
+RUN npm ci
+
+COPY shared_bridge/ ./shared_bridge/
+COPY ui_control_plane/ ./ui_control_plane/
+
+RUN npm run build:bridge
+RUN npm run build:ui
+
+# Stage 2: Lightweight Alpine Nginx Server
+FROM nginx:alpine-slim AS runner
+
+WORKDIR /usr/share/nginx/html
+
+# Clean default nginx files
+RUN rm -rf ./*
+
+# Copy built frontend assets
+COPY --from=builder /app/ui_control_plane/dist ./
+
+# Non-root unprivileged execution
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

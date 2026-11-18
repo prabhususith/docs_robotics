@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/JointAngles6DOF.json",
+  "title": "JointAngles6DOF",
+  "description": "6-Degree-of-Freedom articulated robotic arm configuration and end-effector pose",
+  "type": "object",
+  "properties": {
+    "j1": { "type": "number", "description": "Base yaw angle in radians" },
+    "j2": { "type": "number", "description": "Shoulder pitch angle in radians" },
+    "j3": { "type": "number", "description": "Elbow pitch angle in radians" },
+    "j4": { "type": "number", "description": "Wrist roll angle in radians" },
+    "j5": { "type": "number", "description": "Wrist pitch angle in radians" },
+    "j6": { "type": "number", "description": "Wrist yaw / tool flange angle in radians" },
+    "jointVelocities": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 6,
+      "maxItems": 6,
+      "description": "Joint angular velocities [j1_dot..j6_dot] in rad/s"
+    },
+    "endEffectorPose": {
+      "type": "object",
+      "properties": {
+        "x": { "type": "number", "description": "X Cartesian coordinate in meters" },
+        "y": { "type": "number", "description": "Y Cartesian coordinate in meters" },
+        "z": { "type": "number", "description": "Z Cartesian coordinate in meters" },
+        "roll": { "type": "number", "description": "Roll Euler angle in radians" },
+        "pitch": { "type": "number", "description": "Pitch Euler angle in radians" },
+        "yaw": { "type": "number", "description": "Yaw Euler angle in radians" }
+      },
+      "required": ["x", "y", "z", "roll", "pitch", "yaw"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["j1", "j2", "j3", "j4", "j5", "j6", "jointVelocities", "endEffectorPose"],
+  "additionalProperties": false
+}

@@ -1,0 +1,61 @@
+# =========================================================================
+# RoboCore Studio — Google Cloud Run (Knative Multi-Container Spec)
+# =========================================================================
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: robocore-studio
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "5"
+        run.googleapis.com/container-dependencies: '{"proxy":["ui","gateway","python-ai"]}'
+    spec:
+      containers:
+        # Proxy Front (Serves Port 8080)
+        - name: proxy
+          image: gcr.io/my-gcp-project/robocore-proxy:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+        # React UI
+        - name: ui
+          image: gcr.io/my-gcp-project/robocore-ui:latest
+          resources:
+            limits:
+              cpu: 250m
+              memory: 128Mi
+
+        # Node.js Gateway
+        - name: gateway
+          image: gcr.io/my-gcp-project/robocore-gateway:latest
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PYTHON_AI_URL
+              value: "http://localhost:8000"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+        # Python AI Core
+        - name: python-ai
+          image: gcr.io/my-gcp-project/robocore-python-ai:latest
+          env:
+            - name: PORT_PYTHON_AI
+              value: "8000"
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1024Mi

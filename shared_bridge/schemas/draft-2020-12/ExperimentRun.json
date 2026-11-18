@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/ExperimentRun.json",
+  "title": "ExperimentRun",
+  "description": "Sim-to-Real benchmark experiment log with injected perturbations and error metrics",
+  "type": "object",
+  "properties": {
+    "runId": { "type": "string", "description": "Unique experiment run identifier" },
+    "perturbationConfig": {
+      "type": "object",
+      "properties": {
+        "sensorNoiseSigma": { "type": "number", "minimum": 0 },
+        "wheelSlipFactor": { "type": "number", "minimum": 0, "maximum": 1 },
+        "massShiftKg": { "type": "number" }
+      },
+      "required": ["sensorNoiseSigma", "wheelSlipFactor", "massShiftKg"],
+      "additionalProperties": false
+    },
+    "latencyMs": { "type": "number", "minimum": 0, "description": "Average control loop latency in ms" },
+    "trackingErrorMm": { "type": "number", "minimum": 0, "description": "RMS trajectory tracking error in mm" },
+    "trajectoryLog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": { "type": "number" },
+          "actualPose": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "[x, y, theta]"
+          },
+          "commandedPose": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "[x, y, theta]"
+          },
+          "currentDrawA": { "type": "number" }
+        },
+        "required": ["timestamp", "actualPose", "commandedPose", "currentDrawA"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["runId", "perturbationConfig", "latencyMs", "trackingErrorMm", "trajectoryLog"],
+  "additionalProperties": false
+}

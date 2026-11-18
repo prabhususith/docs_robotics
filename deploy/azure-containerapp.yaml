@@ -1,0 +1,50 @@
+# =========================================================================
+# RoboCore Studio — Azure Container Apps Deployment Specification
+# =========================================================================
+
+apiVersion: 2023-05-01
+kind: ContainerApp
+metadata:
+  name: robocore-studio
+  location: eastus
+spec:
+  environmentId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-robocore/providers/Microsoft.App/managedEnvironments/env-robocore
+  configuration:
+    ingress:
+      external: true
+      targetPort: 8080
+      transport: auto
+      traffic:
+        - latestRevision: true
+          weight: 100
+    secrets:
+      - name: db-conn-secret
+        value: "postgresql://robocore_user:secret@postgres-server.postgres.database.azure.com:5432/robocore_db"
+  template:
+    containers:
+      - name: proxy
+        image: myacr.azurecr.io/robocore-proxy:latest
+        resources:
+          cpu: 0.25
+          memory: 0.5Gi
+      - name: gateway
+        image: myacr.azurecr.io/robocore-gateway:latest
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: PYTHON_AI_URL
+            value: "http://localhost:8000"
+      - name: python-ai
+        image: myacr.azurecr.io/robocore-python-ai:latest
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        env:
+          - name: PORT_PYTHON_AI
+            value: "8000"
+    scale:
+      minReplicas: 1
+      maxReplicas: 3

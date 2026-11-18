@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/LidarScan2D.json",
+  "title": "LidarScan2D",
+  "description": "2D planar LiDAR laser range scan with injected noise parameters",
+  "type": "object",
+  "properties": {
+    "angleMin": { "type": "number", "description": "Start angle of scan in radians" },
+    "angleMax": { "type": "number", "description": "End angle of scan in radians" },
+    "ranges": {
+      "type": "array",
+      "items": { "type": "number" },
+      "description": "Range return distance measurements in meters"
+    },
+    "noiseSigma": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Gaussian range noise standard deviation in meters"
+    }
+  },
+  "required": ["angleMin", "angleMax", "ranges", "noiseSigma"],
+  "additionalProperties": false
+}

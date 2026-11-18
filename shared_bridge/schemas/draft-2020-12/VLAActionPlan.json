@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/VLAActionPlan.json",
+  "title": "VLAActionPlan",
+  "description": "Physical AI Vision-Language-Action execution plan passed through the Safety Kernel",
+  "type": "object",
+  "properties": {
+    "prompt": { "type": "string", "description": "Original human natural-language command" },
+    "locale": { "$ref": "./SupportedLocale.json" },
+    "intent": { "type": "string", "description": "Classified semantic robot action intent" },
+    "safetyKernelApproved": { "type": "boolean", "description": "Deterministic safety gatekeeper decision" },
+    "rejectionReason": { "$ref": "./LocalizedMessage.json" },
+    "waypoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "z": { "type": "number" },
+          "speed": { "type": "number", "minimum": 0 }
+        },
+        "required": ["x", "y", "z", "speed"],
+        "additionalProperties": false
+      },
+      "description": "Validated 3D spatial waypoints"
+    },
+    "traceId": { "type": "string", "description": "Deterministic UUID for replay and auditing" }
+  },
+  "required": ["prompt", "locale", "intent", "safetyKernelApproved", "waypoints", "traceId"],
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/LocalizedMessage.json",
+  "title": "LocalizedMessage",
+  "description": "Structured i18n message key with fallback text and substitution parameters",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Unique key in translation catalog"
+    },
+    "fallbackText": {
+      "type": "string",
+      "description": "Default English text for display if key is unresolved"
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number"]
+      },
+      "description": "Dynamic variable interpolation parameters"
+    }
+  },
+  "required": ["key", "fallbackText"],
+  "additionalProperties": false
+}

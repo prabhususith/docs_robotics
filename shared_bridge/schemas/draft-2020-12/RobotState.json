@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://robocore.studio/schemas/draft-2020-12/RobotState.json",
+  "title": "RobotState",
+  "description": "50Hz real-time telemetry snapshot of mobile-manipulator robot",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "number",
+      "description": "Epoch millisecond timestamp"
+    },
+    "batteryVoltage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 30,
+      "description": "Battery pack voltage in Volts (nominal 12V / 3S-4S LiPo)"
+    },
+    "motorCurrents": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Current draw for [Left, Right] drive motors in Amperes"
+    },
+    "cpuTemp": {
+      "type": "number",
+      "description": "Edge compute temperature in Celsius"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["MANUAL", "AUTONOMOUS", "ESTOP", "CALIBRATION"],
+      "description": "Operating state machine mode"
+    },
+    "safetyInterlock": {
+      "type": "boolean",
+      "description": "Safety relay state: true = nominal closed circuit; false = tripped/open"
+    },
+    "statusMessage": {
+      "$ref": "./LocalizedMessage.json"
+    }
+  },
+  "required": [
+    "timestamp",
+    "batteryVoltage",
+    "motorCurrents",
+    "cpuTemp",
+    "mode",
+    "safetyInterlock",
+    "statusMessage"
+  ],
+  "additionalProperties": false
+}

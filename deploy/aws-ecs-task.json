@@ -1,0 +1,82 @@
+{
+  "family": "robocore-studio-fargate",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::123456789012:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::123456789012:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "python-ai",
+      "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/robocore-python-ai:latest",
+      "essential": true,
+      "cpu": 512,
+      "memoryReservation": 512,
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "PORT_PYTHON_AI", "value": "8000" },
+        { "name": "DB_MODE", "value": "postgres" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/robocore-studio",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "python-ai"
+        }
+      }
+    },
+    {
+      "name": "gateway",
+      "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/robocore-gateway:latest",
+      "essential": true,
+      "cpu": 256,
+      "memoryReservation": 256,
+      "portMappings": [
+        {
+          "containerPort": 5000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" },
+        { "name": "PYTHON_AI_URL", "value": "http://localhost:8000" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/robocore-studio",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "gateway"
+        }
+      }
+    },
+    {
+      "name": "proxy",
+      "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/robocore-proxy:latest",
+      "essential": true,
+      "cpu": 256,
+      "memoryReservation": 256,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/robocore-studio",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "proxy"
+        }
+      }
+    }
+  ]
+}

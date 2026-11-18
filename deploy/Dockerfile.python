@@ -1,0 +1,38 @@
+# =========================================================================
+# RoboCore Studio — Python AI Core, Kinematics & Stateless MCP
+# Hardware Envelope: ThinkBook 8GB RAM (< 380MB RAM Footprint)
+# =========================================================================
+
+FROM python:3.12-slim AS runner
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT_PYTHON_AI=8000
+
+# Install minimal OS runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root robotics service user
+RUN groupadd -r robotics && useradd -r -g robotics -m -d /home/robotics robotics
+
+# Install Python dependencies
+COPY python_ai_core/requirements.txt ./python_ai_core/
+RUN pip install --no-cache-dir -r python_ai_core/requirements.txt
+
+# Copy application source
+COPY python_ai_core/ ./python_ai_core/
+
+# Transfer directory ownership to non-root user
+RUN chown -R robotics:robotics /app
+USER robotics
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "python_ai_core.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
